@@ -1,7 +1,13 @@
 package model;
 
-import java.util.ArrayList;
-
-public class Aluno extends Usuario {
-    ArrayList<Livro> livrosEmprestados = new ArrayList<>();
+public class Aluno extends Usuario { 
+    
+    public Aluno(String nome, String email){
+        super(nome, email);
+    }
+    
+    @Override
+    public int limiteEmprestimos(){
+        return 3;
+    }
 }
