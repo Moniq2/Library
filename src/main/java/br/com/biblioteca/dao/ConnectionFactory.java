@@ -1,13 +1,13 @@
-package br.com.biblioteca.database;
+package br.com.biblioteca.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public final class ConnectionFactory {
-    private static final String URL = "jdbc:mysql://localhost:3306/Biblioteca";
+    private static final String URL = "jdbc:mysql://localhost:3306/library";
     private static final String USUARIO = "root";
-    private static final String SENHA = "minhasenha";
+    private static final String SENHA = "Moniq3421@";
 
     public static Connection conectar() throws SQLException {
         try {
