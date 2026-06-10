@@ -1,7 +1,6 @@
 package br.com.biblioteca.controller;
 
 import br.com.biblioteca.dao.UsuarioDAO;
-import br.com.biblioteca.exception.UsuarioException;
 import br.com.biblioteca.model.Aluno;
 import br.com.biblioteca.model.Professor;
 import br.com.biblioteca.model.Usuario;
@@ -32,15 +31,12 @@ public class PagCadastroController {
     @FXML
     private Label mensagemLabel;
 
-    private ToggleGroup tipoUsuarioGroup;
-
     @FXML
     private void initialize() {
-        tipoUsuarioGroup = new ToggleGroup();
+        ToggleGroup tipoUsuarioGroup = new ToggleGroup();
         alunoCheckbox.setToggleGroup(tipoUsuarioGroup);
         professorCheckbox.setToggleGroup(tipoUsuarioGroup);
     }
-
 
     @FXML
     private void cadastrar(Event event){

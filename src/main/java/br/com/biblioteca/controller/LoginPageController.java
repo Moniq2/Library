@@ -18,6 +18,7 @@ import br.com.biblioteca.dao.UsuarioDAO;
 public class LoginPageController {
     UsuarioDAO usuarioDAO = new UsuarioDAO();
     MenuLateralController menuLateralController = new MenuLateralController();
+
     @FXML
     private TextField campoEmail;
     @FXML
@@ -92,6 +93,5 @@ public class LoginPageController {
             mensagemLabel.setOpacity(1.0);
             System.out.println(e.getMessage());
         }
-
     }
 }

@@ -5,7 +5,6 @@ import br.com.biblioteca.model.Aluno;
 import br.com.biblioteca.model.Professor;
 import br.com.biblioteca.model.Usuario;
 import org.mindrot.jbcrypt.BCrypt;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,33 +12,35 @@ import java.sql.ResultSet;
 public class UsuarioDAO {
     public Usuario buscarUsuarioPorLogin(String email, String senha) {
         String SQL = "SELECT * FROM USUARIO WHERE email = ?;";
-        try (Connection conn = ConnectionFactory.conectar();
-             PreparedStatement ps = conn.prepareStatement(SQL)) {
-            ps.setString(1, email);
-            ResultSet rs = ps.executeQuery();
+        try (Connection conn = ConnectionFactory.conectar()) {
+            assert conn != null;
+            try (PreparedStatement ps = conn.prepareStatement(SQL)) {
+                ps.setString(1, email);
+                ResultSet rs = ps.executeQuery();
 
-            if (rs.next()) {
-                String senhaHash = rs.getString("senha");
-                if (!BCrypt.checkpw(senha, senhaHash)) {
-                    throw new UsuarioException("Não foi possível pegar dados do usuário com email " + email);
+                if (rs.next()) {
+                    String senhaHash = rs.getString("senha");
+                    if (!BCrypt.checkpw(senha, senhaHash)) {
+                        throw new UsuarioException("Não foi possível pegar dados do usuário com email " + email);
+                    }
+
+                    if (rs.getString("tipo").equalsIgnoreCase("aluno")) {
+                        String nome = rs.getString("nome");
+                        Aluno aluno = new Aluno(nome, email, senhaHash);
+                        aluno.setId(rs.getInt("id"));
+                        rs.close();
+                        return aluno;
+
+                    } else {
+                        String nome = rs.getString("nome");
+                        Professor professor = new Professor(nome, email, senhaHash);
+                        professor.setId(rs.getInt("id"));
+                        rs.close();
+                        return professor;
+                    }
                 }
 
-                if (rs.getString("tipo").equalsIgnoreCase("aluno")) {
-                    String nome = rs.getString("nome");
-                    Aluno aluno = new Aluno(nome, email, senhaHash);
-                    aluno.setId(rs.getInt("id"));
-                    rs.close();
-                    return aluno;
-
-                } else {
-                    String nome = rs.getString("nome");
-                    Professor professor = new Professor(nome, email, senhaHash);
-                    professor.setId(rs.getInt("id"));
-                    rs.close();
-                    return professor;
-                }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }

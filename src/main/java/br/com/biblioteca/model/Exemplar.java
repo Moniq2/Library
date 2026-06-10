@@ -14,18 +14,12 @@ public class Exemplar {
         return codigo;
     }
 
-    public boolean getDisponivel(){
-        return disponivel;
-    }
-
-
     public void setLivro(Livro livro){
         Objects.requireNonNull(livro, "livro inválido.");
         this.livro = livro;
     }
 
     public void setCodigo(int codigo){
-        Objects.requireNonNull(codigo, "código inválido.");
         this.codigo = codigo;
     }
 

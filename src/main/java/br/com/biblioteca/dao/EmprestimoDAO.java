@@ -37,28 +37,30 @@ public class EmprestimoDAO {
 
     public ArrayList<Emprestimo> listarEmprestimos(Usuario usuario){ //Retorna uma Arraylist de Emprestimos
         String SQL = "SELECT * FROM emprestimo WHERE id_usuario = ?";
-        try (Connection conn = ConnectionFactory.conectar();
-             PreparedStatement ps = conn.prepareStatement(SQL);) {
-            ps.setInt(1, usuario.getId());
-            ResultSet rs = ps.executeQuery();
+        try (Connection conn = ConnectionFactory.conectar()) {
+            assert conn != null;
+            try (PreparedStatement ps = conn.prepareStatement(SQL)) {
+                ps.setInt(1, usuario.getId());
+                ResultSet rs = ps.executeQuery();
 
-            ArrayList<Emprestimo> lista = new ArrayList<>();
+                ArrayList<Emprestimo> lista = new ArrayList<>();
 
-            while (rs.next()){
-                Livro livro = livroDAO.buscarLivroPorID(rs.getInt("id_livro"));
+                while (rs.next()){
+                    Livro livro = livroDAO.buscarLivroPorID(rs.getInt("id_livro"));
 
-                Exemplar exemplar = exemplarDAO.buscarExemplarPorID(rs.getInt("id_exemplar"));
+                    Exemplar exemplar = exemplarDAO.buscarExemplarPorID(rs.getInt("id_exemplar"));
 
-                Emprestimo emprestimo = new Emprestimo(usuario, livro, exemplar);
-                emprestimo.setCodigo(rs.getInt("id"));
-                emprestimo.setDataEmprestimo(rs.getDate("data_emprestimo").toLocalDate());
-                emprestimo.setDataEntrega(rs.getDate("data_entrega").toLocalDate());
-                emprestimo.setAtivo(rs.getBoolean("ativo"));
+                    Emprestimo emprestimo = new Emprestimo(usuario, livro, exemplar);
+                    emprestimo.setCodigo(rs.getInt("id"));
+                    emprestimo.setDataEmprestimo(rs.getDate("data_emprestimo").toLocalDate());
+                    emprestimo.setDataEntrega(rs.getDate("data_entrega").toLocalDate());
+                    emprestimo.setAtivo(rs.getBoolean("ativo"));
 
-                lista.add(emprestimo);
+                    lista.add(emprestimo);
+                }
+                rs.close();
+                return lista;
             }
-            rs.close();
-            return lista;
         }
         catch (Exception e){
             System.out.println("Erro ao listar emprestimos.");
@@ -86,11 +88,13 @@ public class EmprestimoDAO {
 
     public void atualizarDataDeEntrega(int id, LocalDate data) {
         String SQL = "UPDATE emprestimo SET data_entrega = ? WHERE id = ?";
-        try(Connection conn = ConnectionFactory.conectar();
-            PreparedStatement ps = conn.prepareStatement(SQL)){
-            ps.setDate(1, Date.valueOf(data));
-            ps.setInt(2, id);
-            ps.executeUpdate();
+        try(Connection conn = ConnectionFactory.conectar()) {
+            assert conn != null;
+            try(PreparedStatement ps = conn.prepareStatement(SQL)){
+                ps.setDate(1, Date.valueOf(data));
+                ps.setInt(2, id);
+                ps.executeUpdate();
+            }
         }
         catch (SQLException e){
             System.out.println("Mensagem: " + e.getMessage());

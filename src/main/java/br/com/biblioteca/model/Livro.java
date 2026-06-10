@@ -1,7 +1,5 @@
 package br.com.biblioteca.model;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Objects;
 
 public class Livro {
     private String titulo;
@@ -41,6 +39,4 @@ public class Livro {
         }
         dataPublicacao = data;
     }
-
-
 }

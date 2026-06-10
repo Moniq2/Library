@@ -2,7 +2,6 @@ package br.com.biblioteca.controller;
 
 import br.com.biblioteca.model.Livro;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 public class LivroCardController {

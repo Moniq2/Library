@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class LivrosController {
+    private LivroDAO livroDAO = new LivroDAO();
+
     @FXML
     private VBox livrosContainer;
     @FXML
@@ -43,8 +45,7 @@ public class LivrosController {
             return;
         }
 
-        LivroDAO dao = new LivroDAO();
-        ArrayList<Livro> livros = dao.buscarLivros(termo);
+        ArrayList<Livro> livros = livroDAO.buscarLivros(termo);
         mostrarLivros(livros);
     }
 

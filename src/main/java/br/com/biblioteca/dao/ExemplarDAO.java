@@ -10,20 +10,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ExemplarDAO {
+    LivroDAO livroDAO = new LivroDAO();
+
     public Exemplar buscarExemplarDisponivel(Livro livro) {
         String SQL = "SELECT * FROM exemplar WHERE id_livro = ? AND disponivel = TRUE ORDER BY id LIMIT 1";
-        try (Connection conn = ConnectionFactory.conectar();
-             PreparedStatement ps = conn.prepareStatement(SQL)) {
-            ps.setInt(1, livro.getCodigo());
-            ResultSet rs = ps.executeQuery();
+        try (Connection conn = ConnectionFactory.conectar()) {
+            assert conn != null;
+            try (PreparedStatement ps = conn.prepareStatement(SQL)) {
+                ps.setInt(1, livro.getCodigo());
+                ResultSet rs = ps.executeQuery();
 
-            if (rs.next()) {
-                Exemplar exemplar = new Exemplar();
-                exemplar.setLivro(livro);
-                exemplar.setDisponivel(rs.getBoolean("disponivel"));
-                exemplar.setCodigo(rs.getInt("id"));
-                return exemplar;
-            };
+                if (rs.next()) {
+                    Exemplar exemplar = new Exemplar();
+                    exemplar.setLivro(livro);
+                    exemplar.setDisponivel(rs.getBoolean("disponivel"));
+                    exemplar.setCodigo(rs.getInt("id"));
+                    return exemplar;
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -32,22 +36,23 @@ public class ExemplarDAO {
 
     public Exemplar buscarExemplarPorID(int id){
         String SQL = "SELECT * FROM exemplar WHERE id = ?";
-        try(Connection conn = ConnectionFactory.conectar();
-            PreparedStatement ps = conn.prepareStatement(SQL)){
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
+        try(Connection conn = ConnectionFactory.conectar()) {
+            assert conn != null;
+            try(PreparedStatement ps = conn.prepareStatement(SQL)){
+                ps.setInt(1, id);
+                ResultSet rs = ps.executeQuery();
 
-            Exemplar exemplar = new Exemplar();
-            LivroDAO livDao = new LivroDAO();
+                Exemplar exemplar = new Exemplar();
 
-            if (rs.next()) {
-                Livro livro = livDao.buscarLivroPorID(rs.getInt("id_livro"));
-                exemplar.setLivro(livro);
-                exemplar.setCodigo(rs.getInt("id"));
-                exemplar.setDisponivel(rs.getBoolean("disponivel"));
+                if (rs.next()) {
+                    Livro livro = livroDAO.buscarLivroPorID(rs.getInt("id_livro"));
+                    exemplar.setLivro(livro);
+                    exemplar.setCodigo(rs.getInt("id"));
+                    exemplar.setDisponivel(rs.getBoolean("disponivel"));
+                }
+                rs.close();
+                return exemplar;
             }
-            rs.close();
-            return exemplar;
         }
         catch (SQLException e){
             e.printStackTrace();

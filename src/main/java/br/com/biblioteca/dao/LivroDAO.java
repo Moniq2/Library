@@ -12,19 +12,22 @@ public class LivroDAO {
     public ArrayList<Livro> listarLivros(){ //Retorna uma Arraylist de Livros
         String SQL = "SELECT * FROM livro";
         try (Connection conn = ConnectionFactory.conectar();
-             PreparedStatement ps = conn.prepareStatement(SQL);) {
-            ArrayList<Livro> lista = new ArrayList<>();
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()){
-                Livro livro = new Livro();
-                livro.setCodigo(rs.getInt("id"));
-                livro.setAutor(rs.getString("autor"));
-                livro.setTitulo(rs.getString("titulo"));
-                livro.setDataPublicacao(rs.getDate("data_publicacao").toLocalDate());
+        ) {
+            assert conn != null;
+            try (PreparedStatement ps = conn.prepareStatement(SQL);) {
+                ArrayList<Livro> lista = new ArrayList<>();
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()){
+                    Livro livro = new Livro();
+                    livro.setCodigo(rs.getInt("id"));
+                    livro.setAutor(rs.getString("autor"));
+                    livro.setTitulo(rs.getString("titulo"));
+                    livro.setDataPublicacao(rs.getDate("data_publicacao").toLocalDate());
 
-                lista.add(livro);
+                    lista.add(livro);
+                }
+                return lista;
             }
-            return lista;
         }
         catch (Exception e){
             e.printStackTrace();
@@ -34,24 +37,26 @@ public class LivroDAO {
 
     public ArrayList<Livro> buscarLivros (String termo){
         String SQL = "SELECT * FROM livro WHERE titulo LIKE ? OR autor LIKE ?";
-        try(Connection conn = ConnectionFactory.conectar();
-            PreparedStatement ps = conn.prepareStatement(SQL)) {
+        try(Connection conn = ConnectionFactory.conectar()) {
+            assert conn != null;
+            try(PreparedStatement ps = conn.prepareStatement(SQL)) {
 
-            ps.setString(1, "%" + termo + "%");
-            ps.setString(2, "%" + termo + "%");
+                ps.setString(1, "%" + termo + "%");
+                ps.setString(2, "%" + termo + "%");
 
-            ArrayList<Livro> livros = new ArrayList<>();
-            ResultSet rs = ps.executeQuery();
+                ArrayList<Livro> livros = new ArrayList<>();
+                ResultSet rs = ps.executeQuery();
 
-            while (rs.next()){
-                Livro livro = new Livro();
-                livro.setDataPublicacao((rs.getDate("data_publicacao")).toLocalDate());
-                livro.setTitulo(rs.getString("titulo"));
-                livro.setAutor(rs.getString("autor"));
-                livro.setCodigo(rs.getInt("id"));
-                livros.add(livro);
+                while (rs.next()){
+                    Livro livro = new Livro();
+                    livro.setDataPublicacao((rs.getDate("data_publicacao")).toLocalDate());
+                    livro.setTitulo(rs.getString("titulo"));
+                    livro.setAutor(rs.getString("autor"));
+                    livro.setCodigo(rs.getInt("id"));
+                    livros.add(livro);
+                }
+                return livros;
             }
-            return livros;
         }
         catch (Exception e){
             e.printStackTrace();
@@ -61,20 +66,22 @@ public class LivroDAO {
 
     public Livro buscarLivroPorID(int id){
         String SQL = "SELECT * FROM livro WHERE id = ?";
-        try(Connection conn = ConnectionFactory.conectar();
-            PreparedStatement ps = conn.prepareStatement(SQL)){
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
+        try(Connection conn = ConnectionFactory.conectar()) {
+            assert conn != null;
+            try(PreparedStatement ps = conn.prepareStatement(SQL)){
+                ps.setInt(1, id);
+                ResultSet rs = ps.executeQuery();
 
-            Livro livro = new Livro();
+                Livro livro = new Livro();
 
-            if (rs.next()) {
-                livro.setTitulo(rs.getString("titulo"));
-                livro.setAutor(rs.getString("autor"));
-                livro.setCodigo(rs.getInt("id"));
-                livro.setDataPublicacao(rs.getDate("data_publicacao").toLocalDate());
+                if (rs.next()) {
+                    livro.setTitulo(rs.getString("titulo"));
+                    livro.setAutor(rs.getString("autor"));
+                    livro.setCodigo(rs.getInt("id"));
+                    livro.setDataPublicacao(rs.getDate("data_publicacao").toLocalDate());
+                }
+                return livro;
             }
-            return livro;
         }
         catch (SQLException e){
             e.printStackTrace();
